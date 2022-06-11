@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件下载器</title>
+</head>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<body>
+      <div>
+          <h1 id="msg"></h1>
+          <input id="downUrl" name="downUrl" placeholder="请输入文件下载地址"/>
+          <button onclick="download()">下载文件</button>
+      </div>
+</body>
+<script>
+    function download(){
+        let downUrl = document.getElementById('downUrl').value;
+        axios.post('/download', {
+            downUrl: downUrl,
+        }).then(function (response) {
+            let msg = document.getElementById('msg');
+            msg.innerHTML = response.data;
+        })
+    }
+</script>
+</html>
