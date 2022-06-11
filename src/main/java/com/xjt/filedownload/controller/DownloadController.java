@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -32,6 +33,10 @@ public class DownloadController {
             try {
                 FileUtil.downLoadFromUrl(downUrl,fileName,path);
             }catch (Exception e){
+                File file = new File(path + File.separator + fileName);
+                if (file.exists()){
+                    file.delete();
+                }
                 e.printStackTrace();
                 return "文件下载异常";
             }
