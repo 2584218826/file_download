@@ -21,6 +21,9 @@
         }).then(function (response) {
             let msg = document.getElementById('msg');
             msg.innerHTML = response.data;
+            setTimeout(()=>{
+                msg.innerHTML = '';
+            },3000)
         })
     }
 </script>

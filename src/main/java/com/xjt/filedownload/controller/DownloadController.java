@@ -1,15 +1,16 @@
 package com.xjt.filedownload.controller;
 
+import com.xjt.filedownload.pojo.DownloadResult;
 import com.xjt.filedownload.util.FileUtil;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @program: fileDownload
@@ -19,6 +20,8 @@ import java.util.Map;
  **/
 @RestController
 public class DownloadController {
+
+    ExecutorService threadPool = Executors.newFixedThreadPool(5);
 
     @PostMapping("/download")
     public String download(@RequestBody Map<String, String> map){
@@ -44,5 +47,10 @@ public class DownloadController {
             return "下载地址为空";
         }
         return "下载成功";
+    }
+
+    @GetMapping("/getDownResult/{fileName}")
+    public DownloadResult getDownResult(@PathVariable String fileName){
+        return FileUtil.down.get(fileName);
     }
 }
