@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>文件下载器</title>
+    <link rel="stylesheet" th:href="@{/index.css}" />
 </head>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
 <body>
       <div>
           <h1 id="msg"></h1>
-          <input id="downUrl" name="downUrl" placeholder="请输入文件下载地址"/>
-          <button onclick="download()">下载文件</button>
+          <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
+          <button class="button" style="vertical-align:middle" onclick="download()"><span>下载文件</span></button>
       </div>
 </body>
 <script>
