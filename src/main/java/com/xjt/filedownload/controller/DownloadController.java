@@ -4,10 +4,7 @@ import com.xjt.filedownload.pojo.DownloadResult;
 import com.xjt.filedownload.util.FileUtil;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,7 +27,7 @@ public class DownloadController {
             if (!downUrl.contains("http") || !downUrl.contains("https")){
                 return "下载地址不合法";
             }
-            String path = "/Users/xujiangtao";
+            String path = "/Users/xujiangtao/test";
             String[] split = downUrl.split("/");
             String fileName = split[split.length-1];
             try {

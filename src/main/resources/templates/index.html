@@ -11,6 +11,7 @@
           <h1 id="msg"></h1>
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
           <button class="button" style="vertical-align:middle" onclick="download()"><span>下载文件</span></button>
+          <div style="display: none" class="loader"></div>
       </div>
 </body>
 <script>
@@ -19,6 +20,7 @@
     let fileSize;
     let task;
     function download(){
+        loadCloseOrOpen();
         let downUrl = document.getElementById('downUrl').value;
         let fileName = getFileName(downUrl);
         axios.post('/download', {
@@ -29,12 +31,24 @@
             setTimeout(()=>{
                 msg.innerHTML = '';
             },3000)
+            loadCloseOrOpen()
         })
         task = setInterval(()=>{
             refreshProgress(fileName)
         },1000);
     }
+    function loadCloseOrOpen(loadResult){
+        let load = document.getElementsByClassName('loader')[0];
+        if (load.style.display==='none'){
+            load.style.display = ''
+        }else {
+            load.style.display='none'
+        }
+    }
     function refreshProgress(fileName){
+        if (!fileName){
+            return
+        }
         axios.get('/getDownResult/'+fileName)
             .then(function (res){
                 if (res.data.downRate!=null){
