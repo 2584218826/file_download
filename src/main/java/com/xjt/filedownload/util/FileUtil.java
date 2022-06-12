@@ -65,8 +65,8 @@ public class FileUtil {
             fos.write(buffer, 0, len);
             downSize+=buffer.length;
             BigDecimal b = new BigDecimal((double) downSize/fileSize);
-            Double result = b.doubleValue();
-            DecimalFormat df0 = new DecimalFormat("#.00");
+            Double result = b.doubleValue()*100;
+            DecimalFormat df0 = new DecimalFormat("0.00");
             String downRate = df0.format(result)+"%";
             down.put(fileName, new DownloadResult(downSize, fileSize, downRate));
             for (String key : down.keySet()) {

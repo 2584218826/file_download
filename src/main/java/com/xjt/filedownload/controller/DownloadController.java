@@ -30,7 +30,7 @@ public class DownloadController {
             if (!downUrl.contains("http") || !downUrl.contains("https")){
                 return "下载地址不合法";
             }
-            String path = "C:/test";
+            String path = "/Users/xujiangtao";
             String[] split = downUrl.split("/");
             String fileName = split[split.length-1];
             try {
