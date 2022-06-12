@@ -2,22 +2,20 @@ package com.xjt.filedownload.util;
 
 import com.xjt.filedownload.pojo.DownloadResult;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @program: fileDownload
- * @description:
+ * @description: 下载文件工具类
  * @author: xujt
  * @date: 2022-06-11 15:48
  **/
@@ -45,10 +43,7 @@ public class FileUtil {
             }
             down.put(fileName, new DownloadResult(0, inputStream.available(), "0%"));
             saveInputStreamToFile(inputStream,fileName,savePath,contentLength);
-
-            if(inputStream!=null){
-                inputStream.close();
-            }
+            inputStream.close();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -67,7 +62,7 @@ public class FileUtil {
             BigDecimal b = new BigDecimal((double) downSize/fileSize);
             Double result = b.doubleValue()*100;
             DecimalFormat df0 = new DecimalFormat("0.00");
-            String downRate = df0.format(result)+"%";
+            String downRate = df0.format(result>100?100:result)+"%";
             down.put(fileName, new DownloadResult(downSize, fileSize, downRate));
             for (String key : down.keySet()) {
                 DownloadResult downloadResult = down.get(key);
@@ -75,9 +70,7 @@ public class FileUtil {
             }
         }
         down.remove(fileName);
-        if(fos!=null){
-            fos.close();
-        }
+        fos.close();
     }
 
 }

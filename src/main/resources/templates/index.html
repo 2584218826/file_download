@@ -14,8 +14,13 @@
       </div>
 </body>
 <script>
+    let load = false;
+    let downSize;
+    let fileSize;
+    let task;
     function download(){
         let downUrl = document.getElementById('downUrl').value;
+        let fileName = getFileName(downUrl);
         axios.post('/download', {
             downUrl: downUrl,
         }).then(function (response) {
@@ -25,6 +30,24 @@
                 msg.innerHTML = '';
             },3000)
         })
+        task = setInterval(()=>{
+            refreshProgress(fileName)
+        },1000);
+    }
+    function refreshProgress(fileName){
+        axios.get('/getDownResult/'+fileName)
+            .then(function (res){
+                if (res.data.downRate!=null){
+                    console.log(res.data)
+                }else {
+                    load = false;
+                    clearInterval(task)
+                    console.log(res)
+                }
+            })
+    }
+    function getFileName(url){
+        return url.split('/')[url.split('/').length - 1];
     }
 </script>
 </html>
