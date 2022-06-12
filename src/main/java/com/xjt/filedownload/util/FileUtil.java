@@ -41,7 +41,7 @@ public class FileUtil {
             if(!saveDir.exists()){
                 saveDir.mkdir();
             }
-            down.put(fileName, new DownloadResult(0, inputStream.available(), "0%"));
+            System.out.println("添加值");
             saveInputStreamToFile(inputStream,fileName,savePath,contentLength);
             inputStream.close();
         }catch (Exception e){
@@ -63,7 +63,7 @@ public class FileUtil {
             Double result = b.doubleValue()*100;
             DecimalFormat df0 = new DecimalFormat("0.00");
             String downRate = df0.format(result>100?100:result)+"%";
-            down.put(fileName, new DownloadResult(downSize, fileSize, downRate));
+            down.put(fileName, new DownloadResult(String.format("%.2f", (double)downSize/1024/1024), String.format("%.2f", (double)fileSize/1024/1024), downRate));
             for (String key : down.keySet()) {
                 DownloadResult downloadResult = down.get(key);
                 System.out.println("下载进度======="+downloadResult);

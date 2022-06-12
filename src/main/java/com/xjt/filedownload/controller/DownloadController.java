@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * @program: fileDownload
@@ -21,29 +20,38 @@ public class DownloadController {
     ExecutorService threadPool = Executors.newFixedThreadPool(5);
 
     @PostMapping("/download")
-    public String download(@RequestBody Map<String, String> map){
-        if (map.containsKey("downUrl")){
-            String downUrl = map.get("downUrl");
-            if (!downUrl.contains("http") || !downUrl.contains("https")){
-                return "下载地址不合法";
-            }
-            String path = "/Users/xujiangtao/test";
-            String[] split = downUrl.split("/");
-            String fileName = split[split.length-1];
-            try {
-                FileUtil.downLoadFromUrl(downUrl,fileName,path);
-            }catch (Exception e){
-                File file = new File(path + File.separator + fileName);
-                if (file.exists()){
-                    file.delete();
-                }
-                e.printStackTrace();
-                return "文件下载异常";
-            }
-        }else {
-            return "下载地址为空";
+    public String download(@RequestBody Map<String, String> map) throws ExecutionException, InterruptedException {
+        String downUrl = map.get("downUrl");
+        if (!downUrl.contains("http") || !downUrl.contains("https")) {
+            return "下载地址不合法";
         }
-        return "下载成功";
+        String path = "/Users/xujiangtao/test";
+        String[] split = downUrl.split("/");
+        String fileName = split[split.length - 1];
+        FileUtil.down.put(fileName, new DownloadResult("0", "正在获取...", "0%"));
+        Future<String> submit = threadPool.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                if (map.containsKey("downUrl")) {
+                    try {
+                        FileUtil.downLoadFromUrl(downUrl, fileName, path);
+                    } catch (Exception e) {
+                        File file = new File(path + File.separator + fileName);
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                        e.printStackTrace();
+                        return "文件下载异常";
+                    }finally {
+                        FileUtil.down.remove(fileName);
+                    }
+                } else {
+                    return "下载地址为空";
+                }
+                return "下载成功";
+            }
+        });
+        return submit.get();
     }
 
     @GetMapping("/getDownResult/{fileName}")

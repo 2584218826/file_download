@@ -15,11 +15,11 @@ public class DownloadResult {
     /**
      * 已下载进度
      */
-    Integer downloaded;
+    String downloaded;
     /**
      * 文件大小
      */
-    Integer fileSize;
+    String fileSize;
     /**
      * 下载百分比
      */

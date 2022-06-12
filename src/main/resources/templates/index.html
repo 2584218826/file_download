@@ -51,12 +51,14 @@
         }
         axios.get('/getDownResult/'+fileName)
             .then(function (res){
-                if (res.data.downRate!=null){
+                if (res.data){
+                    console.log('正在下载')
                     console.log(res.data)
                 }else {
                     load = false;
+                    console.log('下载完成')
                     clearInterval(task)
-                    console.log(res)
+
                 }
             })
     }
