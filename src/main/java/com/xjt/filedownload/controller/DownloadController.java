@@ -31,20 +31,24 @@ public class DownloadController {
         }
         String[] split = downUrl.split("/");
         String fileName = split[split.length - 1];
-        FileUtil.down.put(fileName, new DownloadResult("0", "正在获取...", "0%"));
+        if (fileName.contains("?")){
+            fileName = fileName.split("\\?")[0];
+        }
+        FileUtil.down.put(fileName, new DownloadResult("0MB", "正在获取...", "0%"));
+        String finalFileName = fileName;
         Future<String> submit = threadPool.submit(() -> {
             if (map.containsKey("downUrl")) {
                 try {
-                    FileUtil.downLoadFromUrl(downUrl, fileName, path);
+                    FileUtil.downLoadFromUrl(downUrl, finalFileName, path);
                 } catch (Exception e) {
-                    File file = new File(path + File.separator + fileName);
+                    File file = new File(path + File.separator + finalFileName);
                     if (file.exists()) {
                         file.delete();
                     }
                     e.printStackTrace();
                     return "文件下载异常";
                 }finally {
-                    FileUtil.down.remove(fileName);
+                    FileUtil.down.remove(finalFileName);
                 }
             } else {
                 return "下载地址为空";

@@ -9,7 +9,7 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <body>
       <div class="content">
-          <h1 id="msg">aasssss</h1>
+          <h1 id="msg"></h1>
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
           <button class="button" style="vertical-align:middle" onclick="download()"><span>下载文件</span></button>
           <div style="display: none" class="loader"></div>
@@ -77,7 +77,11 @@
             })
     }
     function getFileName(url){
-        return url.split('/')[url.split('/').length - 1];
+        let fileName = url.split('/')[url.split('/').length - 1]
+        if (fileName.indexOf('?')){
+            fileName = fileName.split('?')[0]
+        }
+        return fileName
     }
 </script>
 </html>
