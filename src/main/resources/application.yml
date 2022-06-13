@@ -1,0 +1,6 @@
+server:
+  port: 8080
+savePath: C:/test
+spring:
+  thymeleaf:
+    cache: false
