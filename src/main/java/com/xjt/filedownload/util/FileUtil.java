@@ -76,14 +76,12 @@ public class FileUtil {
     public static String getFileSize(Integer bytes){
         if (bytes<1024){
             return bytes+"bytes";
-        }else if (bytes>1024){
+        }else if (bytes<1048576){
             return String.format("%.2f", (double)bytes/1024)+"KB";
-        }else if (bytes>=1048576){
-            return String.format("%.2f", (double)bytes/1024/1024)+"GB";
-        }else if (bytes>=1073741824){
-            return String.format("%.2f", (double)bytes/1024/1024/1024)+"GB";
+        }else if (bytes<1073741824){
+            return String.format("%.2f", (double)bytes/1024/1024)+"MB";
         }else {
-            return String.format("%.2f", (double)bytes/1024/1024/1024/1024)+"TB";
+            return String.format("%.2f", (double)bytes/1024/1024/1024)+"GB";
         }
     }
 
