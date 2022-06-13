@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <title>文件下载器</title>
     <link rel="stylesheet" th:href="@{/index.css}" />
+    <link rel="stylesheet" th:href="@{/diy.css}" />
 </head>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <body>
-      <div>
-          <h1 id="msg"></h1>
+      <div class="content">
+          <h1 id="msg">aasssss</h1>
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
           <button class="button" style="vertical-align:middle" onclick="download()"><span>下载文件</span></button>
           <div style="display: none" class="loader"></div>
@@ -16,17 +17,23 @@
 </body>
 <script>
     let load = false;
-    let downSize;
-    let fileSize;
     let task;
     function download(){
-        loadCloseOrOpen();
         let downUrl = document.getElementById('downUrl').value;
+        let flag = verify(downUrl);
+        let msg = document.getElementById('msg');
+        if (!flag){
+            msg.innerHTML = '下载地址不合法';
+            setTimeout(()=>{
+                msg.innerHTML = '';
+            },3000)
+            return;
+        }
         let fileName = getFileName(downUrl);
+        loadCloseOrOpen();
         axios.post('/download', {
             downUrl: downUrl,
         }).then(function (response) {
-            let msg = document.getElementById('msg');
             msg.innerHTML = response.data;
             setTimeout(()=>{
                 msg.innerHTML = '';
@@ -36,6 +43,13 @@
         task = setInterval(()=>{
             refreshProgress(fileName)
         },1000);
+    }
+    function verify(downUrl){
+        if (downUrl.indexOf('http')<0 && downUrl.indexOf('http')<0){
+            return false;
+        }else {
+            return true;
+        }
     }
     function loadCloseOrOpen(loadResult){
         let load = document.getElementsByClassName('loader')[0];

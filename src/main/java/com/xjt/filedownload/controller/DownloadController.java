@@ -26,7 +26,7 @@ public class DownloadController {
     @PostMapping("/download")
     public String download(@RequestBody Map<String, String> map) throws ExecutionException, InterruptedException {
         String downUrl = map.get("downUrl");
-        if (!downUrl.contains("http") || !downUrl.contains("https")) {
+        if (!downUrl.contains("http") && !downUrl.contains("https")) {
             return "下载地址不合法";
         }
         String[] split = downUrl.split("/");
