@@ -23,8 +23,7 @@ public class FileUtil {
 
     public static Map<String, DownloadResult> down = new HashMap<>();
 
-    public static void downLoadFromUrl(String urlStr,String fileName,String savePath){
-        try {
+    public static void downLoadFromUrl(String urlStr,String fileName,String savePath) throws IOException {
             URL url = new URL(urlStr);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
@@ -44,9 +43,6 @@ public class FileUtil {
             }
             saveInputStreamToFile(inputStream,fileName,savePath,contentLength);
             inputStream.close();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     public static void saveInputStreamToFile(InputStream inputStream,String fileName,String path,Integer fileSize) throws IOException {

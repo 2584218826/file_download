@@ -1,7 +1,7 @@
 server:
   port: 8081
-savePath: /Users/xujiangtao/test
-#savePath: C:/test
+#savePath: /Users/xujiangtao/test
+savePath: C:/test
 spring:
   thymeleaf:
     cache: false

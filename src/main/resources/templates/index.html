@@ -5,16 +5,34 @@
     <title>文件下载器</title>
     <link rel="stylesheet" th:href="@{/index.css}" />
     <link rel="stylesheet" th:href="@{/diy.css}" />
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 <body>
-      <div class="content">
+      <div id="app" class="content">
           <h1 id="msg"></h1>
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
           <button class="button" style="vertical-align:middle" onclick="download()"><span>下载文件</span></button>
-          <div style="display: none" class="loader"></div>
+          <div class="loader"  style="display: none">
+              aaa
+              <el-progress type="circle" :percentage="100" status="success"></el-progress>
+          </div>
       </div>
 </body>
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return { visible: false }
+        }
+    })
+</script>
 <script>
     let load = false;
     let task;
@@ -45,7 +63,7 @@
         },1000);
     }
     function verify(downUrl){
-        if (downUrl.indexOf('http')<0 && downUrl.indexOf('http')<0){
+        if (downUrl.indexOf('http')<0 && downUrl.indexOf('https')<0){
             return false;
         }else {
             return true;
