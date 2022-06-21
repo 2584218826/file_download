@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.util.Map;
-import java.util.concurrent.*;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * @program: fileDownload
@@ -61,5 +64,20 @@ public class DownloadController {
     @GetMapping("/getDownResult/{fileName}")
     public DownloadResult getDownResult(@PathVariable String fileName){
         return FileUtil.down.get(fileName);
+    }
+
+    @GetMapping("/queryFiles")
+    public List<String> queryFiles(){
+        File file = new File(path);
+        List<String> fileNames = new ArrayList<>();
+        if (file.exists() && file.isDirectory()){
+            List<File> files = Arrays.asList(Objects.requireNonNull(file.listFiles()));
+            for (File f : files) {
+                if (f.isFile() && !f.getName().equals(".DS_Store")){
+                    fileNames.add(f.getName());
+                }
+            }
+        }
+        return fileNames;
     }
 }
