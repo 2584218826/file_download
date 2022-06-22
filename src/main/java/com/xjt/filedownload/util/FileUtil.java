@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,28 +34,29 @@ public class FileUtil {
     String fileUrl;
 
     public void downLoadFromUrl(String urlStr,String fileName,String savePath) throws IOException {
-            URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            long l = System.currentTimeMillis();
-            //设置超时间为3秒
-            conn.setConnectTimeout(3*1000);
-            //防止屏蔽程序抓取而返回403错误
-            conn.setRequestProperty("Accept-Encoding", "identity");
-            conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-            //得到输入流
-            InputStream inputStream = conn.getInputStream();
-            int contentLength = conn.getContentLength();
-            System.out.println(contentLength);
-            //文件保存位置
-            File saveDir = new File(savePath);
-            if(!saveDir.exists()){
-                saveDir.mkdir();
-            }
-            saveInputStreamToFile(inputStream,fileName,savePath,contentLength);
-            Long time = System.currentTimeMillis()-l;
-            String finalFileUrl = fileUrl+fileName;
-            fileInfo.put(fileName, new FileInfo(fileName, getFileSize(contentLength), String.valueOf(time), finalFileUrl));
-            inputStream.close();
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        long l = System.currentTimeMillis();
+        //设置超时间为3秒
+        conn.setConnectTimeout(3*1000);
+        //防止屏蔽程序抓取而返回403错误
+        conn.setRequestProperty("Accept-Encoding", "identity");
+        conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+        //得到输入流
+        InputStream inputStream = conn.getInputStream();
+        int contentLength = conn.getContentLength();
+        System.out.println(contentLength);
+        //文件保存位置
+        File saveDir = new File(savePath);
+        if(!saveDir.exists()){
+            saveDir.mkdir();
+        }
+        saveInputStreamToFile(inputStream,fileName,savePath,contentLength);
+        Long time = System.currentTimeMillis()-l;
+        fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+        String finalFileUrl = fileUrl+File.separator+fileName;
+        fileInfo.put(fileName, new FileInfo(fileName, getFileSize(contentLength), getTime(time), finalFileUrl));
+        inputStream.close();
     }
 
     public void saveInputStreamToFile(InputStream inputStream,String fileName,String path,Integer fileSize) throws IOException {
@@ -89,6 +92,18 @@ public class FileUtil {
             return String.format("%.2f", (double)bytes/1024/1024)+"MB";
         }else {
             return String.format("%.2f", (double)bytes/1024/1024/1024)+"GB";
+        }
+    }
+
+    public String getTime(Long millis){
+        if (millis<1000){
+            return millis+"毫秒";
+        }else if (millis<60000){
+            return millis/1000+"秒";
+        }else if (millis<3600000){
+            return millis/60000+"分"+millis%60000/1000+"秒";
+        }else{
+            return millis/3600000+"小时"+millis%3600000/60000+"分"+millis%3600000%60000/1000+"秒";
         }
     }
 

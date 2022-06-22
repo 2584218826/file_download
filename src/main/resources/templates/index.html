@@ -22,7 +22,7 @@
               <el-progress type="circle" :percentage="100" status="success"></el-progress>
           </div>
           <el-card v-if="visible" style="width: 600px;margin: 40px auto">
-              <el-descriptions title="文件信息">
+              <el-descriptions title="文件信息" :column="1">
                   <el-descriptions-item label="文件名">{{this.fileInfo.fileName}}</el-descriptions-item>
                   <el-descriptions-item label="下载地址">{{this.fileInfo.fileUrl}}</el-descriptions-item>
                   <el-descriptions-item label="下载用时">{{this.fileInfo.downTime}}</el-descriptions-item>
@@ -36,6 +36,7 @@
 </body>
 
 <script>
+    let task;
     new Vue({
         el: '#app',
         data() {
@@ -71,7 +72,7 @@
                     },3000)
                     slef.loadCloseOrOpen()
                 })
-                this.task = setInterval(()=>{
+                task = setInterval(()=>{
                     this.refreshProgress(fileName)
                 },1000);
             },
@@ -103,8 +104,8 @@
                         }else {
                             console.log('下载完成')
                             self.visible = true
-                            clearInterval(self.task)
                             self.getFileInfo(fileName)
+                            clearInterval(task)
                         }
                     })
             },

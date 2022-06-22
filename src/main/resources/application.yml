@@ -6,4 +6,4 @@ spring:
   thymeleaf:
     cache: false
 
-fileUrl: http://xujiangtao.icu:81/xjtfile/test
+fileUrl: http://xujiangtao.icu:81/fileManager
