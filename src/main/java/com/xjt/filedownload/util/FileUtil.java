@@ -61,7 +61,7 @@ public class FileUtil {
 
     public void saveInputStreamToFile(InputStream inputStream,String fileName,String path,Integer fileSize) throws IOException {
         byte[] buffer = new byte[1024];
-        int len = 0;
+        int len;
         File file = new File(path+File.separator+fileName);
         FileOutputStream fos = new FileOutputStream(file);
         int available = inputStream.available();
@@ -70,7 +70,7 @@ public class FileUtil {
             fos.write(buffer, 0, len);
             downSize+=buffer.length;
             BigDecimal b = new BigDecimal((double) downSize/fileSize);
-            Double result = b.doubleValue()*100;
+            double result = b.doubleValue()*100;
             DecimalFormat df0 = new DecimalFormat("0.00");
             String downRate = df0.format(result>100?100:result)+"%";
             down.put(fileName, new DownloadResult(getFileSize(downSize), getFileSize(fileSize), downRate));
