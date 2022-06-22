@@ -1,7 +1,9 @@
 package com.xjt.filedownload.controller;
 
 import com.xjt.filedownload.pojo.DownloadResult;
+import com.xjt.filedownload.pojo.FileInfo;
 import com.xjt.filedownload.util.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,9 @@ public class DownloadController {
     @Value("${savePath:C:/test}")
     String path;
 
+    @Autowired
+    FileUtil fileUtil;
+
     ExecutorService threadPool = Executors.newFixedThreadPool(5);
 
     @PostMapping("/download")
@@ -37,12 +42,12 @@ public class DownloadController {
         if (fileName.contains("?")){
             fileName = fileName.split("\\?")[0];
         }
-        FileUtil.down.put(fileName, new DownloadResult("0MB", "正在获取...", "0%"));
+        fileUtil.down.put(fileName, new DownloadResult("0MB", "正在获取...", "0%"));
         String finalFileName = fileName;
         Future<String> submit = threadPool.submit(() -> {
             if (map.containsKey("downUrl")) {
                 try {
-                    FileUtil.downLoadFromUrl(downUrl, finalFileName, path);
+                    fileUtil.downLoadFromUrl(downUrl, finalFileName, path);
                 } catch (Exception e) {
                     File file = new File(path + File.separator + finalFileName);
                     if (file.exists()) {
@@ -51,7 +56,7 @@ public class DownloadController {
                     e.printStackTrace();
                     return "文件下载异常";
                 }finally {
-                    FileUtil.down.remove(finalFileName);
+                    fileUtil.down.remove(finalFileName);
                 }
             } else {
                 return "下载地址为空";
@@ -63,7 +68,7 @@ public class DownloadController {
 
     @GetMapping("/getDownResult/{fileName}")
     public DownloadResult getDownResult(@PathVariable String fileName){
-        return FileUtil.down.get(fileName);
+        return fileUtil.down.get(fileName);
     }
 
     @GetMapping("/queryFiles")
@@ -79,5 +84,13 @@ public class DownloadController {
             }
         }
         return fileNames;
+    }
+
+    @GetMapping("/getFileInfo/{fileName}")
+    public FileInfo getFileInfo(@PathVariable String fileName){
+        FileInfo fileInfo = fileUtil.fileInfo.get(fileName);
+        fileUtil.fileInfo.remove(fileName);
+        System.out.println(fileInfo);
+        return fileInfo;
     }
 }

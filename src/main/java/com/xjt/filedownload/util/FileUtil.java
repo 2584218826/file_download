@@ -1,6 +1,9 @@
 package com.xjt.filedownload.util;
 
 import com.xjt.filedownload.pojo.DownloadResult;
+import com.xjt.filedownload.pojo.FileInfo;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,14 +22,19 @@ import java.util.Map;
  * @author: xujt
  * @date: 2022-06-11 15:48
  **/
+@Service
 public class FileUtil {
 
-    public static Map<String, DownloadResult> down = new HashMap<>();
+    public Map<String, DownloadResult> down = new HashMap<>();
+    public Map<String, FileInfo> fileInfo = new HashMap<>();
 
-    public static void downLoadFromUrl(String urlStr,String fileName,String savePath) throws IOException {
+    @Value("${fileUrl}")
+    String fileUrl;
+
+    public void downLoadFromUrl(String urlStr,String fileName,String savePath) throws IOException {
             URL url = new URL(urlStr);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-
+            long l = System.currentTimeMillis();
             //设置超时间为3秒
             conn.setConnectTimeout(3*1000);
             //防止屏蔽程序抓取而返回403错误
@@ -42,10 +50,13 @@ public class FileUtil {
                 saveDir.mkdir();
             }
             saveInputStreamToFile(inputStream,fileName,savePath,contentLength);
+            Long time = System.currentTimeMillis()-l;
+            String finalFileUrl = fileUrl+fileName;
+            fileInfo.put(fileName, new FileInfo(fileName, getFileSize(contentLength), String.valueOf(time), finalFileUrl));
             inputStream.close();
     }
 
-    public static void saveInputStreamToFile(InputStream inputStream,String fileName,String path,Integer fileSize) throws IOException {
+    public void saveInputStreamToFile(InputStream inputStream,String fileName,String path,Integer fileSize) throws IOException {
         byte[] buffer = new byte[1024];
         int len = 0;
         File file = new File(path+File.separator+fileName);
@@ -69,9 +80,9 @@ public class FileUtil {
         fos.close();
     }
 
-    public static String getFileSize(Integer bytes){
+    public String getFileSize(Integer bytes){
         if (bytes<1024){
-            return bytes+"bytes";
+            return bytes+"B";
         }else if (bytes<1048576){
             return String.format("%.2f", (double)bytes/1024)+"KB";
         }else if (bytes<1073741824){

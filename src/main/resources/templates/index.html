@@ -17,11 +17,21 @@
       <div id="app" class="content">
           <h1 id="msg"></h1>
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
-          <button class="button" style="vertical-align:middle" onclick="download()"><span>下载文件</span></button>
+          <button class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
           <div class="loader"  style="display: none">
-              aaa
               <el-progress type="circle" :percentage="100" status="success"></el-progress>
           </div>
+          <el-card v-if="visible" style="width: 600px;margin: 40px auto">
+              <el-descriptions title="文件信息">
+                  <el-descriptions-item label="文件名">{{this.fileInfo.fileName}}</el-descriptions-item>
+                  <el-descriptions-item label="下载地址">{{this.fileInfo.fileUrl}}</el-descriptions-item>
+                  <el-descriptions-item label="下载用时">{{this.fileInfo.downTime}}</el-descriptions-item>
+                  <el-descriptions-item label="下载按钮">
+                      <el-tag size="small">{{this.fileInfo.fileName}}</el-tag>
+                  </el-descriptions-item>
+                  <el-descriptions-item label="文件大小">{{this.fileInfo.fileSize}}</el-descriptions-item>
+              </el-descriptions>
+          </el-card>
       </div>
 </body>
 
@@ -29,77 +39,95 @@
     new Vue({
         el: '#app',
         data() {
-            return { visible: false }
-        }
-    })
-</script>
-<script>
-    let load = false;
-    let task;
-    function download(){
-        let downUrl = document.getElementById('downUrl').value;
-        let flag = verify(downUrl);
-        let msg = document.getElementById('msg');
-        if (!flag){
-            msg.innerHTML = '下载地址不合法';
-            setTimeout(()=>{
-                msg.innerHTML = '';
-            },3000)
-            return;
-        }
-        let fileName = getFileName(downUrl);
-        loadCloseOrOpen();
-        axios.post('/download', {
-            downUrl: downUrl,
-        }).then(function (response) {
-            msg.innerHTML = response.data;
-            setTimeout(()=>{
-                msg.innerHTML = '';
-            },3000)
-            loadCloseOrOpen()
-        })
-        task = setInterval(()=>{
-            refreshProgress(fileName)
-        },1000);
-    }
-    function verify(downUrl){
-        if (downUrl.indexOf('http')<0 && downUrl.indexOf('https')<0){
-            return false;
-        }else {
-            return true;
-        }
-    }
-    function loadCloseOrOpen(loadResult){
-        let load = document.getElementsByClassName('loader')[0];
-        if (load.style.display==='none'){
-            load.style.display = ''
-        }else {
-            load.style.display='none'
-        }
-    }
-    function refreshProgress(fileName){
-        if (!fileName){
-            return
-        }
-        axios.get('/getDownResult/'+fileName)
-            .then(function (res){
-                if (res.data){
-                    console.log('正在下载')
-                    console.log(res.data)
-                }else {
-                    load = false;
-                    console.log('下载完成')
-                    clearInterval(task)
+            return {
+                visible: false,
+                task:null,
+                fileInfo:{
 
                 }
-            })
-    }
-    function getFileName(url){
-        let fileName = url.split('/')[url.split('/').length - 1]
-        if (fileName.indexOf('?')){
-            fileName = fileName.split('?')[0]
+            }
+        },
+        methods:{
+            download(){
+                let downUrl = document.getElementById('downUrl').value;
+                let flag = this.verify(downUrl);
+                let msg = document.getElementById('msg');
+                if (!flag){
+                    msg.innerHTML = '下载地址不合法';
+                    setTimeout(()=>{
+                        msg.innerHTML = '';
+                    },3000)
+                    return;
+                }
+                let fileName = this.getFileName(downUrl);
+                let slef = this;
+                this.loadCloseOrOpen();
+                axios.post('/download', {
+                    downUrl: downUrl,
+                }).then(function (response) {
+                    msg.innerHTML = response.data;
+                    setTimeout(()=>{
+                        msg.innerHTML = '';
+                    },3000)
+                    slef.loadCloseOrOpen()
+                })
+                this.task = setInterval(()=>{
+                    this.refreshProgress(fileName)
+                },1000);
+            },
+            verify(downUrl){
+                if (downUrl.indexOf('http')<0 && downUrl.indexOf('https')<0){
+                    return false;
+                }else {
+                    return true;
+                }
+            },
+            loadCloseOrOpen(){
+                let load = document.getElementsByClassName('loader')[0];
+                if (load.style.display==='none'){
+                    load.style.display = ''
+                }else {
+                    load.style.display='none'
+                }
+            },
+            refreshProgress(fileName){
+                if (!fileName){
+                    return
+                }
+                let self = this
+                axios.get('/getDownResult/'+fileName)
+                    .then(function (res){
+                        if (res.data){
+                            console.log('正在下载')
+                            console.log(res.data)
+                        }else {
+                            console.log('下载完成')
+                            self.visible = true
+                            clearInterval(self.task)
+                            self.getFileInfo(fileName)
+                        }
+                    })
+            },
+            getFileName(url){
+                let fileName = url.split('/')[url.split('/').length - 1]
+                if (fileName.indexOf('?')){
+                    fileName = fileName.split('?')[0]
+                }
+                return fileName
+            },
+            // 获取文件信息
+            getFileInfo(fileName){
+                if (fileName){
+                    axios.get('/getFileInfo/'+fileName).then((res)=>{
+                        this.fileInfo = res.data;
+                        console.log(this.fileInfo)
+                    })
+                }else {
+                    console.log('文件名为空')
+                }
+
+            }
         }
-        return fileName
-    }
+    })
 </script>
 </html>
