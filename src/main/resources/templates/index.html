@@ -15,6 +15,7 @@
 
 <body>
       <div id="app" class="content">
+          <h1 class="head">小云下载器</h1>
           <h1 id="msg"></h1>
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
           <button class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
@@ -73,6 +74,7 @@
                         msg.innerHTML = '';
                     },3000)
                     self.loadCloseOrOpen()
+                    console.log('msg.innerHTML',msg.innerHTML)
                 })
                 task = setInterval(()=>{
                     this.refreshProgress(fileName)
@@ -113,7 +115,11 @@
                 if (!fileName){
                     return
                 }
+                let msg = document.getElementById('msg');
                 let self = this
+                if (msg.innerHTML!=='下载成功'){
+                    return
+                }
                 axios.get('/getDownResult/'+fileName)
                     .then(function (res){
                         if (res.data){

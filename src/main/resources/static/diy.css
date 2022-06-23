@@ -1,3 +1,9 @@
 .content{
     text-align: center;
 }
+.head{
+    margin-top: 200px;
+    background: linear-gradient(-45deg,#1875FF, #2ccee3, #1875FF);
+    -webkit-background-clip: text;
+    color: transparent;
+}

@@ -9,6 +9,10 @@
     transition: 0.3s;
 }
 
+.app{
+
+}
+
 .input:focus {
     outline-color: #e8e8e8;
     background: #e8e8e8;
