@@ -19,7 +19,7 @@
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
           <button class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
           <div class="loader"  style="display: none">
-              <el-progress type="circle" :percentage="100" status="success"></el-progress>
+              <el-progress :show-text="true" :percentage="schedule" :color="customColorMethod"></el-progress>
           </div>
           <el-card v-if="visible" style="width: 600px;margin: 40px auto">
               <el-descriptions title="文件信息" :column="1">
@@ -32,7 +32,6 @@
                   <el-descriptions-item label="文件大小">{{this.fileInfo.fileSize}}</el-descriptions-item>
               </el-descriptions>
           </el-card>
-          <el-button @click="downloadEvt('http://xujiangtao.icu:81/xjtfile/lizi.txt')">下载文件</el-button>
       </div>
 </body>
 
@@ -42,11 +41,13 @@
         el: '#app',
         data() {
             return {
+                schedule:0,
                 visible: false,
                 task:null,
                 fileInfo:{
 
-                }
+                },
+
             }
         },
         methods:{
@@ -116,6 +117,7 @@
                 axios.get('/getDownResult/'+fileName)
                     .then(function (res){
                         if (res.data){
+                            self.schedule = parseInt(res.data.downRate.substr(0,res.data.downRate.length-1))
                             console.log('正在下载')
                             console.log(res.data)
                         }else {
@@ -144,7 +146,16 @@
                     console.log('文件名为空')
                 }
 
-            }
+            },
+            customColorMethod(percentage) {
+                if (percentage < 30) {
+                    return '#909399';
+                } else if (percentage < 70) {
+                    return '#e6a23c';
+                } else {
+                    return '#67c23a';
+                }
+            },
         }
     })
 </script>
