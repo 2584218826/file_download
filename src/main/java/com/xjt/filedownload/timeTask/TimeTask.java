@@ -1,5 +1,6 @@
 package com.xjt.filedownload.timeTask;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.io.File;
  * @date: 2022-06-13 09:34
  **/
 @Service
+@Slf4j
 public class TimeTask {
 
     @Value("${savePath:C:/test}")
@@ -30,6 +32,7 @@ public class TimeTask {
             for (File f : files) {
                 f.delete();
             }
+            log.info("文件已清空...");
         }
     }
 }
