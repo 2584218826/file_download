@@ -29,6 +29,7 @@ public class TimeTask {
         File file = new File(path);
         if (file.isDirectory()){
             File[] files = file.listFiles();
+            assert files != null;
             for (File f : files) {
                 f.delete();
             }

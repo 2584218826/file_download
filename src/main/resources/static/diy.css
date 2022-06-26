@@ -7,3 +7,22 @@
     -webkit-background-clip: text;
     color: transparent;
 }
+.icon{
+    color: #1875FF;
+}
+.icon:hover{
+    cursor: pointer;
+}
+.icon:active{
+    cursor: pointer;
+    color: black;
+}
+.disable-button{
+    opacity:0.5;//设置蒙版效果
+    pointer-events:none;//禁止鼠标事件
+
+}
+.url{
+    display: flex;
+    align-items: center;
+}

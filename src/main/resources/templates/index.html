@@ -18,20 +18,23 @@
           <h1 class="head">小云下载器</h1>
           <h1 id="msg"></h1>
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
-          <button class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
+          <button ref="btn" v-bind:class="{'disable-button':downloadFlag}" class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
           <div class="loader"  style="display: none">
               <el-progress :show-text="true" :percentage="schedule" :color="customColorMethod"></el-progress>
           </div>
           <el-card v-if="visible" style="width: 600px;margin: 40px auto">
               <el-descriptions title="文件信息" :column="1">
                   <el-descriptions-item label="文件名">{{this.fileInfo.fileName}}</el-descriptions-item>
-                  <el-descriptions-item label="下载地址">{{this.fileInfo.fileUrl}}</el-descriptions-item>
-                  <el-descriptions-item label="下载用时">{{this.fileInfo.downTime}}</el-descriptions-item>
-                  <el-descriptions-item label="下载按钮">
-                      <el-tag size="small">{{this.fileInfo.fileName}}</el-tag>
+                  <el-descriptions-item label="下载地址">
+                      <div class="url">
+                          <span>{{this.fileInfo.fileUrl}} &nbsp;</span>
+                          <i class="el-icon-copy-document icon" @click="copyToClickBoard"></i>
+                      </div>
                   </el-descriptions-item>
+                  <el-descriptions-item label="下载用时">{{this.fileInfo.downTime}}</el-descriptions-item>
                   <el-descriptions-item label="文件大小">{{this.fileInfo.fileSize}}</el-descriptions-item>
               </el-descriptions>
+              <el-button v-if="fileInfo" type="primary" @click="downloadEvt">下载至本地</el-button>
           </el-card>
       </div>
 </body>
@@ -42,6 +45,8 @@
         el: '#app',
         data() {
             return {
+                msg:null,
+                downloadFlag:false,
                 schedule:0,
                 visible: false,
                 task:null,
@@ -53,6 +58,11 @@
         },
         methods:{
             download(){
+                if (this.downloadFlag){
+                    return;
+                }
+                this.visible = false
+                this.downloadFlag = true
                 let downUrl = document.getElementById('downUrl').value;
                 let flag = this.verify(downUrl);
                 let msg = document.getElementById('msg');
@@ -70,10 +80,18 @@
                     downUrl: downUrl,
                 }).then(function (response) {
                     msg.innerHTML = response.data;
+                    this.msg = msg.innerHTML
                     setTimeout(()=>{
                         msg.innerHTML = '';
                     },3000)
                     self.loadCloseOrOpen()
+                    self.downloadFlag = false
+                    console.log(this.msg)
+                    if (this.msg==='下载成功'){
+                        self.getFileInfo(fileName)
+                        self.visible = true
+
+                    }
                     console.log('msg.innerHTML',msg.innerHTML)
                 })
                 task = setInterval(()=>{
@@ -87,7 +105,7 @@
                     return true;
                 }
             },
-            downloadEvt(url) {
+            downloadEvt() {
                 const el = document.createElement('a');
                 el.style.display = 'none';
                 el.setAttribute('target', '_blank');
@@ -97,7 +115,7 @@
                  * 此时，如果是下载浏览器无法解析的文件，例如.exe,.xlsx..那么浏览器会自动下载，但是如果使用浏览器可以解析的文件，比如.txt,.png,.pdf....浏览器就会采取预览模式
                  * 所以，对于.txt,.png,.pdf等的预览功能我们就可以直接不设置download属性(前提是后端响应头的Content-Type: application/octet-stream，如果为application/pdf浏览器则会判断文件为 pdf ，自动执行预览的策略)
                  */
-                el.setAttribute('download', this.getFileName(url));
+                el.setAttribute('download', this.getFileName(this.fileInfo.fileUrl));
                 el.href = url;
                 document.body.appendChild(el);
                 el.click();
@@ -115,11 +133,10 @@
                 if (!fileName){
                     return
                 }
-                let msg = document.getElementById('msg');
                 let self = this
-                if (msg.innerHTML!=='下载成功'){
-                    return
-                }
+                // if (this.msg!=='下载成功'){
+                //     return
+                // }
                 axios.get('/getDownResult/'+fileName)
                     .then(function (res){
                         if (res.data){
@@ -128,8 +145,7 @@
                             console.log(res.data)
                         }else {
                             console.log('下载完成')
-                            self.visible = true
-                            self.getFileInfo(fileName)
+
                             clearInterval(task)
                         }
                     })
@@ -162,6 +178,25 @@
                     return '#67c23a';
                 }
             },
+            //  拷贝内容到剪切板
+            copyToClickBoard(){
+                navigator.clipboard.writeText(this.fileInfo.fileUrl)
+                    .then(() => {
+                        console.log("文本已拷贝到剪切板...")
+                        console.log(this)
+                        this.$message({
+                            message: '文件地址拷贝成功',
+                            type: 'success'
+                        });
+                    })
+                    .catch(err => {
+                        this.$message({
+                            message: '拷贝失败',
+                            type: 'error'
+                        });
+                    })
+
+            }
         }
     })
 </script>
