@@ -182,8 +182,6 @@
             copyToClickBoard(){
                 navigator.clipboard.writeText(this.fileInfo.fileUrl)
                     .then(() => {
-                        console.log("文本已拷贝到剪切板...")
-                        console.log(this)
                         this.$message({
                             message: '文件地址拷贝成功',
                             type: 'success'
