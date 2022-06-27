@@ -34,7 +34,7 @@
                   <el-descriptions-item label="下载用时">{{this.fileInfo.downTime}}</el-descriptions-item>
                   <el-descriptions-item label="文件大小">{{this.fileInfo.fileSize}}</el-descriptions-item>
               </el-descriptions>
-              <el-button v-if="fileInfo" type="primary" @click="downloadEvt">下载至本地</el-button>
+              <el-button v-if="fileInfo" type="success" @click="downloadEvt">下载至本地</el-button>
           </el-card>
       </div>
 </body>
@@ -105,7 +105,8 @@
                     return true;
                 }
             },
-            downloadEvt() {
+            downloadEvt(url) {
+                url = this.fileInfo.fileUrl
                 const el = document.createElement('a');
                 el.style.display = 'none';
                 el.setAttribute('target', '_blank');
@@ -115,7 +116,7 @@
                  * 此时，如果是下载浏览器无法解析的文件，例如.exe,.xlsx..那么浏览器会自动下载，但是如果使用浏览器可以解析的文件，比如.txt,.png,.pdf....浏览器就会采取预览模式
                  * 所以，对于.txt,.png,.pdf等的预览功能我们就可以直接不设置download属性(前提是后端响应头的Content-Type: application/octet-stream，如果为application/pdf浏览器则会判断文件为 pdf ，自动执行预览的策略)
                  */
-                el.setAttribute('download', this.getFileName(this.fileInfo.fileUrl));
+                el.setAttribute('download', this.getFileName(url));
                 el.href = url;
                 document.body.appendChild(el);
                 el.click();

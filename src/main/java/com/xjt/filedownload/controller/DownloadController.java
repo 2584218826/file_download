@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -39,6 +41,7 @@ public class DownloadController {
         }
         String[] split = downUrl.split("/");
         String fileName = split[split.length - 1];
+        fileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
         if (fileName.contains("?")){
             fileName = fileName.split("\\?")[0];
         }
