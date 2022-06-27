@@ -29,4 +29,22 @@ public class FileInfo {
      * 下载地址
      */
     String fileUrl;
+
+    String createTIme;
+
+    public FileInfo(String fileName,String createTime){
+        this.fileName = fileName;
+        this.createTIme = createTime;
+    }
+
+    public FileInfo(String fileName, String fileSize, String downTime, String fileUrl) {
+        this.fileName = fileName;
+        this.fileSize = fileSize;
+        this.downTime = downTime;
+        this.fileUrl = fileUrl;
+    }
+
+    public FileInfo(){
+
+    }
 }

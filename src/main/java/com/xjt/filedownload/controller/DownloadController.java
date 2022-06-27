@@ -3,13 +3,18 @@ package com.xjt.filedownload.controller;
 import com.xjt.filedownload.pojo.DownloadResult;
 import com.xjt.filedownload.pojo.FileInfo;
 import com.xjt.filedownload.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -23,6 +28,7 @@ import java.util.concurrent.Future;
  * @date: 2022-06-11 15:45
  **/
 @RestController
+@Slf4j
 public class DownloadController {
 
     @Value("${savePath:C:/test}")
@@ -75,18 +81,32 @@ public class DownloadController {
     }
 
     @GetMapping("/queryFiles")
-    public List<String> queryFiles(){
+    public List<FileInfo> queryFiles(){
         File file = new File(path);
-        List<String> fileNames = new ArrayList<>();
+        List<FileInfo> fileInfos = new ArrayList<>();
         if (file.exists() && file.isDirectory()){
             List<File> files = Arrays.asList(Objects.requireNonNull(file.listFiles()));
+            int size = files.size();
+            if (size>10){
+                files = files.subList(0, 9);
+            }
             for (File f : files) {
+                String createTime = "";
+                try {
+                    BasicFileAttributes attr = Files.readAttributes(f.toPath(), BasicFileAttributes.class);
+
+                    String pattern = "yyyy-MM-dd HH:mm:ss";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    createTime = simpleDateFormat.format( new Date( attr.creationTime().toMillis() ) );
+                } catch (IOException e) {
+                    log.error("获取文件属性异常");
+                }
                 if (f.isFile() && !f.getName().equals(".DS_Store")){
-                    fileNames.add(f.getName());
+                    fileInfos.add(new FileInfo(f.getName(), createTime));
                 }
             }
         }
-        return fileNames;
+        return fileInfos;
     }
 
     @GetMapping("/getFileInfo/{fileName}")
