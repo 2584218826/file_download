@@ -32,6 +32,22 @@
     justify-content: center;
 }
 .loader{
-    width: 50%;
+    width: 45%;
     margin: 0 auto;
+}
+#msg{
+    font-weight: 100;
+    color: #1875FF;
+}
+.start{
+    color: #909399;
+}
+.half{
+    color: #e6a23c;
+}
+.end{
+    color: #67c23a;
+}
+.ok{
+    color: #379cfb;
 }

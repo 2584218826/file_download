@@ -21,7 +21,15 @@
           <button ref="btn" v-bind:class="{'disable-button':downloadFlag}" class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
           <div class="loader"  style="display: none">
               <div class="downClass">
-                  <span v-if="this.downFile.fileSize">{{this.downFile.downloaded}}/{{this.downFile.fileSize}}</span>
+                  <span v-if="this.downFile.fileSize">
+                      <span v-bind:class="{
+                      start:this.schedule>=0 && this.schedule<=30,
+                      half:this.schedule>30 && this.schedule<=70,
+                      end:this.schedule >70 && this.schedule <=100
+                      }">{{this.downFile.downloaded}}</span>
+                      /
+                      <span class="ok">{{this.downFile.fileSize}}</span>
+                  </span>
               </div>
               <el-progress :show-text="true" :percentage="schedule" :color="customColorMethod"></el-progress>
 
