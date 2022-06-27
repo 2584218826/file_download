@@ -61,6 +61,7 @@
                 if (this.downloadFlag){
                     return;
                 }
+                this.schedule = 0;
                 this.visible = false
                 this.downloadFlag = true
                 let downUrl = document.getElementById('downUrl').value;
@@ -135,9 +136,6 @@
                     return
                 }
                 let self = this
-                // if (this.msg!=='下载成功'){
-                //     return
-                // }
                 axios.get('/getDownResult/'+fileName)
                     .then(function (res){
                         if (res.data){
