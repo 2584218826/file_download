@@ -12,8 +12,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +51,6 @@ public class FileUtil {
         }
         saveInputStreamToFile(inputStream,fileName,savePath,contentLength);
         Long time = System.currentTimeMillis()-l;
-        fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
         String finalFileUrl = fileUrl+File.separator+fileName;
         fileInfo.put(fileName, new FileInfo(fileName, getFileSize(contentLength), getTime(time), finalFileUrl));
         inputStream.close();
