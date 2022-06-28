@@ -51,3 +51,6 @@
 .ok{
     color: #379cfb;
 }
+.el-descriptions-item__container{
+    align-items: center;
+}

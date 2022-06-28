@@ -44,8 +44,12 @@
                           <i class="el-icon-copy-document icon" @click="copyToClickBoard"></i>
                       </div>
                   </el-descriptions-item>
-                  <el-descriptions-item label="下载用时">{{this.fileInfo.downTime}}</el-descriptions-item>
-                  <el-descriptions-item label="文件大小">{{this.fileInfo.fileSize}}</el-descriptions-item>
+                  <el-descriptions-item label="下载用时">
+                      <el-tag type="success">{{this.fileInfo.downTime}}</el-tag>
+                  </el-descriptions-item>
+                  <el-descriptions-item label="文件大小">
+                      <el-tag>{{this.fileInfo.fileSize}}</el-tag>
+                  </el-descriptions-item>
               </el-descriptions>
               <el-button v-if="fileInfo" type="success" @click="downloadEvt(this.fileInfo.fileUrl)">下载至本地</el-button>
           </el-card>
