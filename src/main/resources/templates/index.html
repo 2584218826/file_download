@@ -230,19 +230,37 @@
             },
             //  拷贝内容到剪切板
             copyToClickBoard(){
-                navigator.clipboard.writeText(this.fileInfo.fileUrl)
-                    .then(() => {
-                        this.$message({
-                            message: '文件地址拷贝成功',
-                            type: 'success'
-                        });
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(this.fileInfo.fileUrl)
+                        .then(() => {
+                            this.$message({
+                                message: '文件地址拷贝成功',
+                                type: 'success'
+                            });
+                        })
+                        .catch(err => {
+                            this.$message({
+                                message: '拷贝失败',
+                                type: 'error'
+                            });
+                        })
+                    return;
+                } else {
+                    // 创建text area
+                    const textArea = document.createElement('textarea')
+                    textArea.value = this.fileInfo.fileUrl
+                    // 使text area不在viewport，同时设置不可见
+                    document.body.appendChild(textArea)
+                    textArea.focus()
+                    textArea.select()
+                    this.$message.success('复制成功')
+                    return new Promise((res, rej) => {
+                        // 执行复制命令并移除文本框
+                        document.execCommand('copy') ? res() : rej()
+                        textArea.remove()
                     })
-                    .catch(err => {
-                        this.$message({
-                            message: '拷贝失败',
-                            type: 'error'
-                        });
-                    })
+                }
+
 
             }
         }
