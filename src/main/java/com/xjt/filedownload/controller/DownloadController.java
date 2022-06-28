@@ -34,6 +34,9 @@ public class DownloadController {
     @Value("${savePath:C:/test}")
     String path;
 
+    @Value("${fileUrl}")
+    String fileUrl;
+
     @Autowired
     FileUtil fileUtil;
 
@@ -85,10 +88,10 @@ public class DownloadController {
         File file = new File(path);
         List<FileInfo> fileInfos = new ArrayList<>();
         if (file.exists() && file.isDirectory()){
-            List<File> files = Arrays.asList(Objects.requireNonNull(file.listFiles()));
+            List<File> files = Arrays.asList(fileUtil.orderByDate(path));
             int size = files.size();
             if (size>10){
-                files = files.subList(0, 9);
+                files = files.subList(0, 11);
             }
             for (File f : files) {
                 String createTime = "";
@@ -101,8 +104,9 @@ public class DownloadController {
                 } catch (IOException e) {
                     log.error("获取文件属性异常");
                 }
-                if (f.isFile() && !f.getName().equals(".DS_Store")){
-                    fileInfos.add(new FileInfo(f.getName(), createTime));
+                String fileName = URLDecoder.decode(f.getName(), StandardCharsets.UTF_8);
+                if (f.isFile() && !fileName.equals(".DS_Store")){
+                    fileInfos.add(new FileInfo(fileName, createTime,fileUrl+File.separator+fileName));
                 }
             }
         }

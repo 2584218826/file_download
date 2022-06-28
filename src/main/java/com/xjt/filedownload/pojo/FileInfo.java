@@ -30,11 +30,12 @@ public class FileInfo {
      */
     String fileUrl;
 
-    String createTIme;
+    String createTime;
 
-    public FileInfo(String fileName,String createTime){
+    public FileInfo(String fileName,String createTime,String fileUrl){
         this.fileName = fileName;
-        this.createTIme = createTime;
+        this.createTime = createTime;
+        this.fileUrl = fileUrl;
     }
 
     public FileInfo(String fileName, String fileSize, String downTime, String fileUrl) {

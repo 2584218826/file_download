@@ -19,6 +19,7 @@
           <h1 id="msg"></h1>
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
           <button ref="btn" v-bind:class="{'disable-button':downloadFlag}" class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
+          <el-button size="mini" icon="el-icon-finished" plain type="primary" @click="openFileList">历史文件列表</el-button>
           <div class="loader"  style="display: none">
               <div class="downClass">
                   <span v-if="this.downFile.fileSize">
@@ -46,8 +47,32 @@
                   <el-descriptions-item label="下载用时">{{this.fileInfo.downTime}}</el-descriptions-item>
                   <el-descriptions-item label="文件大小">{{this.fileInfo.fileSize}}</el-descriptions-item>
               </el-descriptions>
-              <el-button v-if="fileInfo" type="success" @click="downloadEvt">下载至本地</el-button>
+              <el-button v-if="fileInfo" type="success" @click="downloadEvt(this.fileInfo.fileUrl)">下载至本地</el-button>
           </el-card>
+
+          <el-drawer
+                  title="历史文件列表"
+                  :visible.sync="drawer"
+                  direction="rtl"
+                  size="40%"
+          >
+              <el-table
+                      :data="files"
+                      style="width: 100%">
+                  <el-table-column prop="fileName" label="文件名称"></el-table-column>
+                  <el-table-column prop="createTime" label="创建时间"></el-table-column>
+                  <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+                      <template slot-scope="scope">
+                          <el-button
+                                  size="mini"
+                                  type="success"
+                                  icon="el-icon-download"
+                                  @click="downloadEvt(scope.row.fileUrl)"
+                          >下载</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+          </el-drawer>
       </div>
 </body>
 
@@ -57,6 +82,7 @@
         el: '#app',
         data() {
             return {
+                drawer:false,
                 msg:null,
                 downloadFlag:false,
                 schedule:0,
@@ -65,10 +91,23 @@
                 fileInfo:{
 
                 },
-                downFile:{}
+                downFile:{},
+                files:[]
             }
         },
         methods:{
+            openFileList(){
+                this.queryFiles()
+                this.drawer = true
+                console.log(this.files)
+            },
+            queryFiles(){
+              axios.get('/queryFiles')
+                .then(res=>{
+                    console.log(res.data)
+                    this.files = res.data;
+                })
+            },
             download(){
                 if (this.downloadFlag){
                     return;
@@ -119,7 +158,6 @@
                 }
             },
             downloadEvt(url) {
-                url = this.fileInfo.fileUrl
                 const el = document.createElement('a');
                 el.style.display = 'none';
                 el.setAttribute('target', '_blank');
