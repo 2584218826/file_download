@@ -19,7 +19,7 @@
           <h1 id="msg"></h1>
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
           <button ref="btn" v-bind:class="{'disable-button':downloadFlag}" class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
-          <el-button size="mini" icon="el-icon-finished" plain type="primary" @click="openFileList">历史文件列表</el-button>
+          <el-button size="mini" icon="el-icon-finished" plain type="primary" @click="openFileList">历史下载文件列表</el-button>
           <div class="loader"  style="display: none">
               <div class="downClass">
                   <span v-if="this.downFile.fileSize">
@@ -60,6 +60,7 @@
                   direction="rtl"
                   size="40%"
           >
+              <span style="color: #e6a23c">（每周一2点清除文件，请及时下载文件）</span>
               <el-table
                       :data="files"
                       style="width: 100%">
