@@ -51,7 +51,7 @@
                       <el-tag>{{this.fileInfo.fileSize}}</el-tag>
                   </el-descriptions-item>
               </el-descriptions>
-              <el-button v-if="fileInfo" type="success" @click="downloadEvt(this.fileInfo.fileUrl)">下载至本地</el-button>
+              <el-button v-if="fileInfo" type="success" @click="downloadEvt()">下载至本地</el-button>
           </el-card>
 
           <el-drawer
@@ -104,12 +104,10 @@
             openFileList(){
                 this.queryFiles()
                 this.drawer = true
-                console.log(this.files)
             },
             queryFiles(){
               axios.get('/queryFiles')
                 .then(res=>{
-                    console.log(res.data)
                     this.files = res.data;
                 })
             },
@@ -143,13 +141,11 @@
                     },3000)
                     self.loadCloseOrOpen()
                     self.downloadFlag = false
-                    console.log(this.msg)
                     if (this.msg==='下载成功'){
                         self.getFileInfo(fileName)
                         self.visible = true
 
                     }
-                    console.log('msg.innerHTML',msg.innerHTML)
                 })
                 task = setInterval(()=>{
                     this.refreshProgress(fileName)
@@ -163,6 +159,9 @@
                 }
             },
             downloadEvt(url) {
+                if (!url){
+                    url = this.fileInfo.fileUrl
+                }
                 const el = document.createElement('a');
                 el.style.display = 'none';
                 el.setAttribute('target', '_blank');
@@ -196,11 +195,7 @@
                         if (res.data){
                             self.schedule = parseInt(res.data.downRate.substr(0,res.data.downRate.length-1))
                             self.downFile = res.data
-                            console.log('正在下载')
-                            console.log(res.data)
                         }else {
-                            console.log('下载完成')
-
                             clearInterval(task)
                         }
                     })
@@ -217,7 +212,6 @@
                 if (fileName){
                     axios.get('/getFileInfo/'+fileName).then((res)=>{
                         this.fileInfo = res.data;
-                        console.log(this.fileInfo)
                     })
                 }else {
                     console.log('文件名为空')
