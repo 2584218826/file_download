@@ -105,8 +105,11 @@ public class DownloadController {
                     log.error("获取文件属性异常");
                 }
                 String fileName = URLDecoder.decode(f.getName(), StandardCharsets.UTF_8);
+                FileInfo fileInfo;
                 if (f.isFile() && !fileName.equals(".DS_Store")){
-                    fileInfos.add(new FileInfo(fileName, createTime,fileUrl+File.separator+fileName));
+                    fileInfo = new FileInfo(fileName, createTime, fileUrl + File.separator + fileName);
+                    fileInfo.setFileSize(fileUtil.getFileSize((int) f.length()));
+                    fileInfos.add(fileInfo);
                 }
             }
         }
