@@ -100,7 +100,7 @@ public class DownloadController {
 
                     String pattern = "yyyy-MM-dd HH:mm:ss";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    createTime = simpleDateFormat.format( new Date( attr.creationTime().toMillis() ) );
+                    createTime = simpleDateFormat.format( new Date( attr.lastModifiedTime().toMillis() ) );
                 } catch (IOException e) {
                     log.error("获取文件属性异常");
                 }
