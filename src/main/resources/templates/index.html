@@ -14,12 +14,13 @@
 </head>
 
 <body>
+
       <div id="app" class="content">
           <h1 class="head">小云下载器</h1>
           <h1 id="msg"></h1>
-          <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址"/>
-          <button ref="btn" v-bind:class="{'disable-button':downloadFlag}" class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
-          <el-button size="mini" icon="el-icon-finished" plain type="primary" @click="openFileList">历史下载文件列表</el-button>
+          <input style="margin: 0 5px" type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址(仅支持http、https协议)" />
+          <button ref="btn" v-bind:class="{'disable-button':downloadFlag}" class="button" style="vertical-align:middle;margin: 0 5px" @click="download()"><span>下载文件</span></button>
+          <el-button style="margin: 0 5px" size="mini" icon="el-icon-finished" plain type="primary" @click="openFileList">历史下载文件列表</el-button>
           <div class="loader"  style="display: none">
               <div class="downClass">
                   <span v-if="this.downFile.fileSize">
@@ -33,7 +34,6 @@
                   </span>
               </div>
               <el-progress :show-text="true" :percentage="schedule" :color="customColorMethod"></el-progress>
-
           </div>
           <el-card v-if="visible" style="width: 600px;margin: 40px auto">
               <el-descriptions title="文件信息" :column="1">
@@ -53,7 +53,6 @@
               </el-descriptions>
               <el-button v-if="fileInfo" type="success" @click="downloadEvt()">下载至本地</el-button>
           </el-card>
-
           <el-drawer
                   title="历史文件列表"
                   :visible.sync="drawer"
