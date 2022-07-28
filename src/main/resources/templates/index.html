@@ -21,6 +21,11 @@
           <button ref="btn" v-bind:class="{'disable-button':downloadFlag}" class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
           <el-button size="mini" icon="el-icon-finished" plain type="primary" @click="openFileList">历史下载文件列表</el-button>
           <div class="loader"  style="display: none">
+              <span style="float: left;width: 80px;text-align: left" v-bind:class="{
+                      start:this.schedule>=0 && this.schedule<=30,
+                      half:this.schedule>30 && this.schedule<=70,
+                      end:this.schedule >70 && this.schedule <=100
+                      }">{{down}}</span>
               <div class="downClass">
                   <span v-if="this.downFile.fileSize">
                       <span v-bind:class="{
@@ -82,10 +87,13 @@
 
 <script>
     let task;
+    let str;
     new Vue({
         el: '#app',
         data() {
             return {
+                count:0,
+                down:'',
                 drawer:false,
                 msg:null,
                 downloadFlag:false,
@@ -152,6 +160,20 @@
                 task = setInterval(() => {
                     this.refreshProgress(fileName)
                 }, 1000);
+                str = setInterval(()=>{
+                    this.downStr()
+                },300)
+            },
+            downStr(){
+                if (this.count>=999){
+                    this.count = 0
+                }
+                this.count++
+                let temp = ""
+                for (let i = 0; i < this.count%3+1; i++) {
+                    temp+='.';
+                }
+                this.down = '下载中'+temp
             },
             verify(downUrl){
                 if (downUrl.indexOf('http')<0 && downUrl.indexOf('https')<0){
@@ -199,6 +221,7 @@
                             self.downFile = res.data
                         }else {
                             clearInterval(task)
+                            clearInterval(str)
                         }
                     })
             },
