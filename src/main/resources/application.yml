@@ -1,7 +1,7 @@
 server:
   port: 8081
-#savePath: /www/server/nginx-1.18.0/webapps/fileManager
-savePath: /Users/xujiangtao/test
+savePath: /www/server/nginx-1.18.0/webapps/fileManager
+#savePath: /Users/xujiangtao/test
 #savePath: C:/test
 spring:
   thymeleaf:

@@ -15,7 +15,7 @@
 
 <body>
       <div id="app" class="content">
-          <h1 class="head">小云下载器</h1>
+          <div class="head">小云下载器</div>
           <h1 id="msg"></h1>
           <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址(仅支持http、https协议)" />
           <button ref="btn" v-bind:class="{'disable-button':downloadFlag}" class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
@@ -82,6 +82,13 @@
                   </el-table-column>
               </el-table>
           </el-drawer>
+          <div class="footer">
+              <span class="notice">此为练手项目，国外资源并不一定有加速效果，下载慢因为带宽不高。</span>
+              <br/>
+              <span class="notice">(如需加速，可以下载源码部署至国外服务器)</span>
+              <br/>
+              <a class="link" href="https://gitee.com/XU_JIANG_TAOXJT/file-download">gitee源码公开地址</a>
+          </div>
       </div>
 </body>
 
@@ -154,7 +161,7 @@
                         self.visible = true
                         let head = document.getElementsByClassName('head')[0];
                         console.log(head)
-                        head.style.marginTop = '20vh'
+                        head.style.paddingTop = '20vh'
                     }
                 })
                 task = setInterval(() => {
