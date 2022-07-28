@@ -12,13 +12,14 @@
     <!-- 引入组件库 -->
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
+
 <body>
       <div id="app" class="content">
           <h1 class="head">小云下载器</h1>
           <h1 id="msg"></h1>
-          <input style="margin: 0 5px" type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址(仅支持http、https协议)" />
-          <button ref="btn" v-bind:class="{'disable-button':downloadFlag}" class="button" style="vertical-align:middle;margin: 0 5px" @click="download()"><span>下载文件</span></button>
-          <el-button style="margin: 0 5px" size="mini" icon="el-icon-finished" plain type="primary" @click="openFileList">历史下载文件列表</el-button>
+          <input type="text" id="downUrl" class="input" name="downUrl" placeholder="请输入文件下载地址(仅支持http、https协议)" />
+          <button ref="btn" v-bind:class="{'disable-button':downloadFlag}" class="button" style="vertical-align:middle" @click="download()"><span>下载文件</span></button>
+          <el-button size="mini" icon="el-icon-finished" plain type="primary" @click="openFileList">历史下载文件列表</el-button>
           <div class="loader"  style="display: none">
               <div class="downClass">
                   <span v-if="this.downFile.fileSize">
@@ -109,8 +110,8 @@
                     this.files = res.data;
                 })
             },
-            download(){
-                if (this.downloadFlag){
+            download: function () {
+                if (this.downloadFlag) {
                     return;
                 }
                 this.schedule = 0;
@@ -119,11 +120,11 @@
                 let downUrl = document.getElementById('downUrl').value;
                 let flag = this.verify(downUrl);
                 let msg = document.getElementById('msg');
-                if (!flag){
+                if (!flag) {
                     msg.innerHTML = '下载地址不合法';
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         msg.innerHTML = '';
-                    },3000)
+                    }, 3000)
                     this.downloadFlag = false
                     return;
                 }
@@ -135,20 +136,22 @@
                 }).then(function (response) {
                     msg.innerHTML = response.data;
                     this.msg = msg.innerHTML
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         msg.innerHTML = '';
-                    },3000)
+                    }, 3000)
                     self.loadCloseOrOpen()
                     self.downloadFlag = false
-                    if (this.msg==='下载成功'){
+                    if (this.msg === '下载成功') {
                         self.getFileInfo(fileName)
                         self.visible = true
-
+                        let head = document.getElementsByClassName('head')[0];
+                        console.log(head)
+                        head.style.marginTop = '20vh'
                     }
                 })
-                task = setInterval(()=>{
+                task = setInterval(() => {
                     this.refreshProgress(fileName)
-                },1000);
+                }, 1000);
             },
             verify(downUrl){
                 if (downUrl.indexOf('http')<0 && downUrl.indexOf('https')<0){

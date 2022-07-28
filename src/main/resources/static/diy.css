@@ -1,17 +1,15 @@
 .content{
     text-align: center;
-    display: flex;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-    position: relative;
 }
 .head{
+    margin-top: 40vh;
     background: linear-gradient(-45deg,#1875FF, #2ccee3, #1875FF);
     -webkit-background-clip: text;
     color: transparent;
-    position: absolute;
-    top: 40vh;
+}
+body{
+    margin: 0 auto;
+
 }
 .icon{
     color: #1875FF;
@@ -59,10 +57,4 @@
 }
 .el-descriptions-item__container{
     align-items: center;
-}
-.download_class{
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    height: 100vh;
 }

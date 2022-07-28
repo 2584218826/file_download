@@ -54,7 +54,7 @@ public class DownloadController {
         if (fileName.contains("?")){
             fileName = fileName.split("\\?")[0];
         }
-        fileUtil.down.put(fileName, new DownloadResult("0MB", "正在获取...", "0%"));
+        fileUtil.down.put(fileName, new DownloadResult("0MB", "正在获取文件大小...", "0%"));
         String finalFileName = fileName;
         Future<String> submit = threadPool.submit(() -> {
             if (map.containsKey("downUrl")) {
