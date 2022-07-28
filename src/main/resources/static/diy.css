@@ -65,7 +65,9 @@ body{
 .footer{
     position: absolute;
     bottom: 10px;
-    left: 40%;
+    width: 100vw;
+    left: 50%;
+    margin-left: -50vw;
 }
 .notice{
     color: #909399;
