@@ -62,7 +62,7 @@ public class DownloadController {
                     fileUtil.downLoadFromUrl(downUrl, finalFileName, path);
                 } catch (Exception e) {
                     File file = new File(path + File.separator + finalFileName);
-                    if (file.exists()) {
+                    if (file.exists() && !file.isDirectory()) {
                         file.delete();
                     }
                     e.printStackTrace();
