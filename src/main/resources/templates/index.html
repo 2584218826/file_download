@@ -159,6 +159,9 @@
                     if (this.msg === '下载成功') {
                         self.getFileInfo(fileName)
                         self.visible = true
+                        let head = document.getElementsByClassName('head')[0];
+                        console.log(head)
+                        head.style.marginTop = '-20vh'
                     }
                 })
                 task = setInterval(() => {
